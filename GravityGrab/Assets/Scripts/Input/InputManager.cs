@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace CustomInputs
 {
@@ -33,10 +34,22 @@ namespace CustomInputs
             ReadInput(KeyCode.A, ref inputPackage.moveLeft);
             ReadInput(KeyCode.D, ref inputPackage.moveRight);
             if (Input.GetKeyDown(KeyCode.Space))
-                inputPackage.changeGravity = true;
+                CheckIfChangeGravity();
             foreach (var component in components)
             {
                 ((IManageInput)component).ReceiveInput(inputPackage);
+            }
+        }
+
+        private void CheckIfChangeGravity()
+        {
+            if((inputPackage.lookUp ? 1 : 0) + (inputPackage.lookDown ? 1 : 0) + (inputPackage.moveLeft ? 1 : 0) + (inputPackage.moveRight ? 1 : 0) == 1)
+            {
+                inputPackage.changeGravity = true;
+            }
+            else
+            {
+                inputPackage.Reset();
             }
         }
 
