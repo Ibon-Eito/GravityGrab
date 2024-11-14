@@ -19,23 +19,34 @@ namespace PlayerFunctions
 
     public class PlayerMovement : MonoBehaviour, IManageInput
     {
-        [SerializeField] private float moveSpeed;
-        [SerializeField] private float gravityMultiplier;
+        #region PublicVariables
+        [Header("Speeed")]
+        public float moveSpeed;
+        public float baseGravityMultiplier;
+        public float gravityMultiplier;
+        [Header("ParticleSystems")]
         public ParticleSystem dustPsRight;
         public ParticleSystem dustPsLeft;
+        #endregion
 
+        # region PrivateVariables
         private SpriteRenderer spriteRenderer;
         private Animator playerAnim;
-        //private ConstantForce2D gravityForce;
+        private OrbCatcher orbCatcher;
+        private Rigidbody2D rb;
 
         private bool lastMoveLeft = false;
         private PlayerGravity playerGravity = PlayerGravity.Down;
         private bool flying = false;
+        #endregion
 
         void Start()
         {
+            gravityMultiplier = baseGravityMultiplier;
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerAnim = GetComponent<Animator>();
+            orbCatcher = GetComponent<OrbCatcher>();
+            rb = GetComponent<Rigidbody2D>();
         }
 
         void OnCollisionEnter2D(Collision2D collision)
@@ -44,8 +55,9 @@ namespace PlayerFunctions
             {
                 flying = false;
                 playerAnim.SetBool("Fly", false);
+                gravityMultiplier = baseGravityMultiplier;
+                orbCatcher.ResetOrbsAbsorbed();
             }
-                
         }
 
         public void ReceiveInput(InputPackage input)
@@ -78,8 +90,15 @@ namespace PlayerFunctions
                     playerAnim.SetBool("Walk", false);
                     break;
             }
-
         }
+
+        public void ChangeGravityMultiplier(float newGravMul)
+        {
+            gravityMultiplier = newGravMul;
+            Physics.gravity = Physics.gravity.normalized * gravityMultiplier;
+        }
+
+        #region Actions
 
         private Actions CheckAction(InputPackage input)
         {
@@ -159,7 +178,10 @@ namespace PlayerFunctions
             else
                 direction = Vector3.left;
 
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            if(!flying)
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
+            else
+                transform.Translate(direction * moveSpeed * 1.5f * Time.deltaTime);
 
             lastMoveLeft = left;
         }
@@ -185,12 +207,14 @@ namespace PlayerFunctions
             if (spriteRenderer.flipX)   // Changing to right
             {
                 spriteRenderer.flipX = false;
-                CreateDustRight();
+                if(!flying)
+                    CreateDustRight();
             }
             else
             {
                 spriteRenderer.flipX = true;
-                CreateDustLeft();
+                if (!flying)
+                    CreateDustLeft();
             }
         }
 
@@ -214,28 +238,33 @@ namespace PlayerFunctions
 
             if (input.moveRight && playerGravity != PlayerGravity.Right)
             {
-                ChangeGravityToDirection(PlayerGravity.Right, new Vector2(1,0) * gravityMultiplier, new Vector3(0,0,90));
+                ChangeGravityToDirection(PlayerGravity.Right, new Vector2(1,0), new Vector3(0,0,90));
             }
             if (input.moveLeft && playerGravity != PlayerGravity.Left)
             {
-                ChangeGravityToDirection(PlayerGravity.Left, new Vector2(-1, 0) * gravityMultiplier, new Vector3(0, 0, -90));
+                ChangeGravityToDirection(PlayerGravity.Left, new Vector2(-1, 0), new Vector3(0, 0, -90));
             }
             if (input.lookUp && playerGravity != PlayerGravity.Up)
             {
-                ChangeGravityToDirection(PlayerGravity.Up, new Vector2(0, 1) * gravityMultiplier, new Vector3(0, 0, 180));
+                ChangeGravityToDirection(PlayerGravity.Up, new Vector2(0, 1), new Vector3(0, 0, 180));
             }
             if (input.lookDown && playerGravity != PlayerGravity.Down)
             {
-                ChangeGravityToDirection(PlayerGravity.Down, new Vector2(0, -1) * gravityMultiplier, new Vector3(0, 0, 0));
+                ChangeGravityToDirection(PlayerGravity.Down, new Vector2(0, -1), new Vector3(0, 0, 0));
             }
         }
 
         private void ChangeGravityToDirection(PlayerGravity pG, Vector2 gravDir, Vector3 rotDir)
         {
             playerGravity = pG;
-            Physics2D.gravity = gravDir;
-            transform.DORotate(rotDir, 0.1f).Play();
-        }
 
+            Physics2D.gravity = gravDir * gravityMultiplier;
+
+            
+            rb.velocity = Vector2.zero;
+            rb.AddForce(Physics2D.gravity * rb.mass, ForceMode2D.Impulse);
+            transform.DORotate(rotDir, 0.2f).Play();
+        }
+        #endregion
     }
 }
