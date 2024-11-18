@@ -24,6 +24,7 @@ namespace PlayerFunctions
         public float moveSpeed;
         public float baseGravityMultiplier;
         public float gravityMultiplier;
+        public bool canMove = true;
         [Header("ParticleSystems")]
         public ParticleSystem dustPsRight;
         public ParticleSystem dustPsLeft;
@@ -62,33 +63,36 @@ namespace PlayerFunctions
 
         public void ReceiveInput(InputPackage input)
         {
-            if (input.changeGravity)
+            if (canMove)
             {
-                ChangeGravity(input);
-            }
+                if (input.changeGravity)
+                {
+                    ChangeGravity(input);
+                }
 
-            Actions currentAction = CheckAction(input);
+                Actions currentAction = CheckAction(input);
 
-            switch (currentAction)
-            {
-                case Actions.MoveRight:
-                    MovePlayer(false);
-                    break;
-                case Actions.MoveLeft:
-                    MovePlayer(true);
-                    break;
-                case Actions.LookDown:
-                    LookDown();
-                    break;
-                case Actions.LookUp:
-                    LookUp();
-                    break;
-                case Actions.Nothing:
-                    playerAnim.SetBool("Fly", flying);
-                    playerAnim.SetBool("LookUp", false);
-                    playerAnim.SetBool("LookDown", false);
-                    playerAnim.SetBool("Walk", false);
-                    break;
+                switch (currentAction)
+                {
+                    case Actions.MoveRight:
+                        MovePlayer(false);
+                        break;
+                    case Actions.MoveLeft:
+                        MovePlayer(true);
+                        break;
+                    case Actions.LookDown:
+                        LookDown();
+                        break;
+                    case Actions.LookUp:
+                        LookUp();
+                        break;
+                    case Actions.Nothing:
+                        playerAnim.SetBool("Fly", flying);
+                        playerAnim.SetBool("LookUp", false);
+                        playerAnim.SetBool("LookDown", false);
+                        playerAnim.SetBool("Walk", false);
+                        break;
+                }
             }
         }
 
@@ -254,7 +258,7 @@ namespace PlayerFunctions
             }
         }
 
-        private void ChangeGravityToDirection(PlayerGravity pG, Vector2 gravDir, Vector3 rotDir)
+        public void ChangeGravityToDirection(PlayerGravity pG, Vector2 gravDir, Vector3 rotDir)
         {
             playerGravity = pG;
 
