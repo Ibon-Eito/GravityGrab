@@ -27,7 +27,7 @@ public class OrbCatcher : MonoBehaviour
         {
             orbsAbsorbed++;
             CalculateNewGravity();
-            StartCoroutine(collider.transform.parent.gameObject.GetComponent<Orb>().DestroyOrb());
+            StartCoroutine(collider.transform.parent.parent.gameObject.GetComponent<Orb>().DestroyOrb());
         }
     }
 
