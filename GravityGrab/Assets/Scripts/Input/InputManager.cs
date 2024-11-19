@@ -23,6 +23,11 @@ namespace CustomInputs
         void Start()
         {
             inputPackage = new InputPackage();
+
+            components = FindObjectsOfType<MonoBehaviour>() // Get all MonoBehaviours in the scene
+            .Where(mb => mb is IManageInput)            // Filter only those implementing IManageInput
+            .Cast<Component>()                         // Cast to Component
+            .ToList();
         }
 
         void Update()
@@ -35,6 +40,7 @@ namespace CustomInputs
             ReadInput(KeyCode.D, ref inputPackage.moveRight);
             if (Input.GetKeyDown(KeyCode.Space))
                 CheckIfChangeGravity();
+            ReadInput(KeyCode.Escape, ref inputPackage.pauseGame);
             foreach (var component in components)
             {
                 ((IManageInput)component).ReceiveInput(inputPackage);

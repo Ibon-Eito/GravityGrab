@@ -11,6 +11,7 @@ namespace CustomInputs
         public bool moveRight;
         public bool moveLeft;
         public bool changeGravity;
+        public bool pauseGame;
 
         public void Reset()
         {
@@ -19,6 +20,7 @@ namespace CustomInputs
             moveRight = false;
             moveLeft = false;
             changeGravity = false;
+            pauseGame = false;
         }
     }
 }
