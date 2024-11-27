@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,11 @@ public class GameManager : MonoBehaviour
     public bool tutorialDone = false;
 
     public static GameManager Instance { get; private set; }
+
+    [Header("Level info")]
+    public int currentLevel = 0;
+    public string timerText;
+    public int orbsLeft;
 
     private void Awake()
     {
@@ -51,6 +57,7 @@ public class GameManager : MonoBehaviour
 
     public void GoToLevel(int level)
     {
+        currentLevel = level;
         SceneManager.LoadScene("Level" + level.ToString());
     }
 
@@ -58,6 +65,24 @@ public class GameManager : MonoBehaviour
     {
         //TODO Guardar partida
         Application.Quit();
+    }
+
+    public void CompleteLevel()
+    {
+        Timer timer = FindObjectOfType<Timer>();
+        timer.stop = true;
+        timerText = timer.timerText.text;
+        Orb[] orbs = FindObjectsOfType<Orb>();
+
+        foreach (Orb orb in orbs)
+        {
+            if (orb.isActiveAndEnabled)
+            {
+                orbsLeft++;
+            }
+        }
+
+        GoToGameScene();
     }
 
     #endregion

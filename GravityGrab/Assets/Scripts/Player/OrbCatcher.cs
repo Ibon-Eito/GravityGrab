@@ -26,6 +26,7 @@ public class OrbCatcher : MonoBehaviour
         if (collider.gameObject.CompareTag("Orb"))
         {
             orbsAbsorbed++;
+            GetComponent<VFXPlayer>().PlayOrbSFX(orbsAbsorbed);
             CalculateNewGravity();
             StartCoroutine(collider.transform.parent.parent.gameObject.GetComponent<Orb>().DestroyOrb());
         }

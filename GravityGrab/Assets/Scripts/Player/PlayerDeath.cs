@@ -32,6 +32,7 @@ public class PlayerDeath : MonoBehaviour
 
     private void Die()
     {
+        GetComponent<VFXPlayer>().PlayDamageSFX();
         playerMovement.canMove = false;
         anim.SetBool("Fly", false);
         anim.SetBool("Dead", true);

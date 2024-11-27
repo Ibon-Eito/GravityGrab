@@ -4,6 +4,7 @@ using UnityEngine;
 using CustomInputs;
 using DG.Tweening;
 using System;
+using Unity.VisualScripting;
 
 namespace PlayerFunctions
 {
@@ -25,9 +26,11 @@ namespace PlayerFunctions
         public float baseGravityMultiplier;
         public float gravityMultiplier;
         public bool canMove = true;
+
         [Header("ParticleSystems")]
         public ParticleSystem dustPsRight;
         public ParticleSystem dustPsLeft;
+        public ParticleSystem speedPs;
         #endregion
 
         # region PrivateVariables
@@ -35,6 +38,7 @@ namespace PlayerFunctions
         private Animator playerAnim;
         private OrbCatcher orbCatcher;
         private Rigidbody2D rb;
+        private Screenshake screenshake;
 
         private bool lastMoveLeft = false;
         private PlayerGravity playerGravity = PlayerGravity.Down;
@@ -48,12 +52,20 @@ namespace PlayerFunctions
             playerAnim = GetComponent<Animator>();
             orbCatcher = GetComponent<OrbCatcher>();
             rb = GetComponent<Rigidbody2D>();
+            screenshake = Camera.main.GetComponent<Screenshake>();
         }
 
         void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.CompareTag("Ground"))
             {
+                float gravityDiff = gravityMultiplier - baseGravityMultiplier;
+                if (gravityDiff > 0)
+                {
+                    StartCoroutine(screenshake.Shake((0.1f + gravityDiff / 10),gravityDiff/70));
+                }
+
+                speedPs.Stop();
                 flying = false;
                 playerAnim.SetBool("Fly", false);
                 gravityMultiplier = baseGravityMultiplier;
@@ -235,6 +247,7 @@ namespace PlayerFunctions
         private void ChangeGravity(InputPackage input)
         {
             flying = true;
+            SetSpeedParticles();
             playerAnim.SetBool("Fly", flying);
             playerAnim.SetBool("LookUp", false);
             playerAnim.SetBool("LookDown", false);
@@ -268,6 +281,31 @@ namespace PlayerFunctions
             rb.velocity = Vector2.zero;
             rb.AddForce(Physics2D.gravity * rb.mass, ForceMode2D.Impulse);
             transform.DORotate(rotDir, 0.2f).Play();
+        }
+
+        private void SetSpeedParticles()
+        {
+            float gravityDiff = gravityMultiplier - baseGravityMultiplier;
+            if (gravityDiff > 0)
+            {
+                speedPs.Stop();
+                speedPs.Clear();
+
+                var emission = speedPs.emission;
+                emission.rateOverTime = 10 + (gravityDiff * 2);
+
+                var main = speedPs.main;
+                main.startSpeed = new ParticleSystem.MinMaxCurve(1 + (gravityDiff/3), 2 + +(gravityDiff / 3));
+
+                var psRenderer = speedPs.GetComponent<ParticleSystemRenderer>();
+                if (psRenderer != null)
+                {
+                    psRenderer.lengthScale = Mathf.Min(1 + (gravityDiff / 2), 7f);
+                }
+
+
+                speedPs.Play();
+            }
         }
         #endregion
     }
