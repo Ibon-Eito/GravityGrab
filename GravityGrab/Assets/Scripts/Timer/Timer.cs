@@ -7,6 +7,8 @@ public class Timer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
     public bool stop = false;
+    public int minutes;
+    public int seconds;
 
     private float elapsedTime;
 
@@ -21,8 +23,8 @@ public class Timer : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
 
-            int minutes = Mathf.FloorToInt(elapsedTime / 60f);
-            int seconds = Mathf.FloorToInt(elapsedTime % 60f);
+            minutes = Mathf.FloorToInt(elapsedTime / 60f);
+            seconds = Mathf.FloorToInt(elapsedTime % 60f);
 
             timerText.text = $"{minutes:D2}:{seconds:D2}";
         }

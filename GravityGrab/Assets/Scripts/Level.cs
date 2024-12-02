@@ -17,9 +17,11 @@ public class Level : MonoBehaviour
     [SerializeField] private int levelNumber;
     [SerializeField] private int orbsTaken;
     [SerializeField] private int totalOrbs;
-    [SerializeField] private String timeToComplete;
+    [SerializeField] private int secondsToComplete = 61;
+    [SerializeField] private int minutesToComplete = 61;
     [SerializeField] private bool unlocked;
     [SerializeField] private bool played;
+
 
     void Start()
     {
@@ -58,15 +60,18 @@ public class Level : MonoBehaviour
     private void SetPlayedLevelTexts()
     {
         orbsText.text = orbsTaken.ToString() + "/" + totalOrbs.ToString();
-        timeText.text = timeToComplete.ToString();
+       
+        timeText.text = $"{minutesToComplete:D2}:{secondsToComplete:D2}";
     }
 
 
-    public void SetLevelInfo(int _orbsLeft, String _timeToComplete)
+    public void SetLevelInfo(LevelInfo levelInfo)
     {
-        played = true;
-        orbsTaken = totalOrbs - _orbsLeft;
-        timeToComplete = _timeToComplete;
+        played = levelInfo.played;
+        unlocked = levelInfo.unlocked;
+        orbsTaken = totalOrbs - levelInfo.orbsLeft;
+        minutesToComplete = levelInfo.minutes;
+        secondsToComplete = levelInfo.seconds;
     }
 
     public void UnlockLevel()

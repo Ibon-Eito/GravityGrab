@@ -49,6 +49,7 @@ public class PortalKey : MonoBehaviour
     private Vector2 velocity = Vector2.zero;
     private Vector2 nextWanderPosition;
     private bool reachedPortal = false;
+    private bool stop = false;
 
     void Start()
     {
@@ -62,6 +63,7 @@ public class PortalKey : MonoBehaviour
 
     void Update()
     {
+        if(stop) return;
         switch (state)
         {
             case PortalKeyState.PATHING:
@@ -78,13 +80,27 @@ public class PortalKey : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Player"))
+        if (collider.gameObject.CompareTag("Player") && state != PortalKeyState.OPENING)
         {
             collider.gameObject.GetComponent<VFXPlayer>().PlayKeySFX();
             state = PortalKeyState.OPENING;
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
             gameObject.GetComponent<TrailRenderer>().startColor = Color.white;
             gameObject.GetComponent<TrailRenderer>().endColor = Color.white;
+
+            try
+            {
+                TutorialManager tut = FindObjectOfType<TutorialManager>();
+                if (tut != null)
+                {
+                    if (tut.currentStep == 3)
+                        StartCoroutine(tut.GoToNextStep());
+                }
+            }
+            catch
+            {
+                Debug.LogWarning("You are not in tutorial");
+            }
         }    
     }
 
@@ -101,7 +117,7 @@ public class PortalKey : MonoBehaviour
                 repetitions--;
                 if (repetitions < 0)
                 {
-                    nextWanderPosition = UnityEngine.Random.insideUnitCircle * maxWanderRange;
+                    nextWanderPosition = (Vector2)transform.position + UnityEngine.Random.insideUnitCircle * maxWanderRange;
                     Debug.DrawRay((Vector3)nextWanderPosition, transform.position, Color.green, 2);
                     state = PortalKeyState.WANDERING;
                 }
@@ -115,7 +131,7 @@ public class PortalKey : MonoBehaviour
 
         if (Vector2.Distance(transform.position, nextWanderPosition) <= wanderingInfo.distanceToStop)
         {
-            nextWanderPosition = UnityEngine.Random.insideUnitCircle * 4;
+            nextWanderPosition = (Vector2)transform.position + UnityEngine.Random.insideUnitCircle * maxWanderRange;
             Debug.DrawLine((Vector3)nextWanderPosition, transform.position, Color.green, 2);
         }
     }
@@ -126,6 +142,7 @@ public class PortalKey : MonoBehaviour
 
         if (!reachedPortal && Vector2.Distance(transform.position, portalPosition) <= openingInfo.distanceToStop)
         {
+            FindObjectOfType<VFXPlayer>().PlayKeySFX();
             reachedPortal = true;
             portal.OpenPortal();
             explosion.Play();
@@ -152,5 +169,10 @@ public class PortalKey : MonoBehaviour
             float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, angle), Time.deltaTime * info.rotationSpeed);
         }
+    }
+
+    public void CanMove(bool can)
+    {
+        stop = !can;
     }
 }

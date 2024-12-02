@@ -7,7 +7,9 @@ using UnityEngine;
 public class OrbCatcher : MonoBehaviour
 {
     [SerializeField] private int orbsAbsorbed;
-
+    
+    private bool canCatch = true;
+ 
     private PlayerMovement playerMovement;
 
     void Start()
@@ -23,12 +25,28 @@ public class OrbCatcher : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Orb"))
+        if (canCatch)
         {
-            orbsAbsorbed++;
-            GetComponent<VFXPlayer>().PlayOrbSFX(orbsAbsorbed);
-            CalculateNewGravity();
-            StartCoroutine(collider.transform.parent.parent.gameObject.GetComponent<Orb>().DestroyOrb());
+            if (collider.gameObject.CompareTag("Orb"))
+            {
+                orbsAbsorbed++;
+                GetComponent<VFXPlayer>().PlayOrbSFX(orbsAbsorbed);
+                CalculateNewGravity();
+                StartCoroutine(collider.transform.parent.parent.gameObject.GetComponent<Orb>().DestroyOrb());
+                try
+                {
+                    TutorialManager tut = GetComponent<TutorialManager>();
+                    if (tut != null)
+                    {
+                        if (tut.currentStep == 2)
+                            StartCoroutine(tut.GoToNextStep());
+                    }
+                }
+                catch
+                {
+                    Debug.LogWarning("You are not in tutorial");
+                }
+            }
         }
     }
 
@@ -36,5 +54,15 @@ public class OrbCatcher : MonoBehaviour
     {
         float newGravity = playerMovement.baseGravityMultiplier + Mathf.Pow(2,orbsAbsorbed/2);
         playerMovement.ChangeGravityMultiplier(newGravity);
+    }
+
+    public void StopCatching()
+    {
+        canCatch = false;
+    }
+
+    public void ResumeCatching()
+    {
+        canCatch = true;
     }
 }

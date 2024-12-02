@@ -14,6 +14,7 @@ public class PauseMenu : MonoBehaviour, IManageInput
 
     private RectTransform r;
     private PlayerMovement playerMovement;
+    private PortalKey key;
     private Rigidbody2D rb;
 
     [SerializeField] private bool onPause = false;
@@ -22,6 +23,7 @@ public class PauseMenu : MonoBehaviour, IManageInput
     {
         r = GetComponent<RectTransform>();
         playerMovement = FindObjectOfType<PlayerMovement>();
+        key = FindObjectOfType<PortalKey>();
         rb = playerMovement.GetComponent<Rigidbody2D>();
     }
 
@@ -38,10 +40,9 @@ public class PauseMenu : MonoBehaviour, IManageInput
     {
         onPause = true;
 
-        Debug.Log("Pausing game");
-
         EventSystem.current.SetSelectedGameObject(null);
         playerMovement.canMove = false;
+        if (key != null) key.CanMove(false);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         r.DOMoveY(-1000,tweenTime).SetRelative().SetEase(ease).Play();
     }
@@ -50,10 +51,9 @@ public class PauseMenu : MonoBehaviour, IManageInput
     {
         onPause = false;
 
-        Debug.Log("Resuming game");
-
         EventSystem.current.SetSelectedGameObject(null);
         playerMovement.canMove = true;
+        if (key != null) key.CanMove(true);
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.AddForce(Physics2D.gravity, ForceMode2D.Impulse);
         r.DOMoveY(1000, tweenTime).SetRelative().SetEase(ease).Play();

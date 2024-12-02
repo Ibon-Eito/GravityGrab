@@ -8,6 +8,7 @@ TagManager:
   - Orb
   - Obstacle
   - Portal
+  - Key
   layers:
   - Default
   - TransparentFX

@@ -28,12 +28,22 @@ public class VFXPlayer : MonoBehaviour
     }
     public void PlayDamageSFX()
     {
-        audioS.PlayOneShot(keyClip);
+        audioS.PlayOneShot(damageClip);
     }
 
     public void PlayStetSFX()
     {
-        StartCoroutine(PlayStepSFXRoutine());
+        //StartCoroutine(PlayStepSFXRoutine());
+    }
+
+    public void Mute()
+    {
+        audioS.volume = 0;
+    }
+
+    public void Unmute()
+    {
+        audioS.volume = 0.7f;
     }
 
     private IEnumerator PlayStepSFXRoutine()

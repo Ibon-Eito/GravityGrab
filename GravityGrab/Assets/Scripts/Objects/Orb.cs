@@ -8,8 +8,11 @@ public class Orb : MonoBehaviour
     [SerializeField] private GameObject orbVisuals;
     [SerializeField] private AbsorbParticles absorbParticles;
 
+    public bool isGrabbed = false;
+
     public IEnumerator DestroyOrb()
     {
+        isGrabbed = true;
         orbVisuals.SetActive(false);
         ps.Play();
         Object.Destroy(this.gameObject, 5);

@@ -33,6 +33,7 @@ public class PlayerDeath : MonoBehaviour
     private void Die()
     {
         GetComponent<VFXPlayer>().PlayDamageSFX();
+        GetComponent<OrbCatcher>().StopCatching();
         playerMovement.canMove = false;
         anim.SetBool("Fly", false);
         anim.SetBool("Dead", true);
@@ -41,7 +42,7 @@ public class PlayerDeath : MonoBehaviour
         playerMovement.ChangeGravityToDirection(PlayerGravity.Down, new Vector2(0, -1), new Vector3(0, 0, 0));
 
         Sequence dieSequence = DOTween.Sequence();
-        dieSequence.Append(spriteRenderer.DOColor(Color.red, 0.2f));
+        dieSequence.Append(spriteRenderer.DOColor(Color.red, 0.2f).OnComplete(() => GetComponent<VFXPlayer>().Mute()));
         dieSequence.Append(spriteRenderer.DOColor(Color.white, 0.2f));
         dieSequence.Append(spriteRenderer.DOColor(Color.red, 0.2f));
         dieSequence.Append(spriteRenderer.DOColor(Color.white, 0.2f));
@@ -54,6 +55,8 @@ public class PlayerDeath : MonoBehaviour
 
     private void EndDeath()
     {
+        GetComponent<VFXPlayer>().Unmute();
+        GetComponent<OrbCatcher>().ResumeCatching();
         playerMovement.canMove = true;
         anim.SetBool("Dead",false);
     }

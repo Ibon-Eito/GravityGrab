@@ -26,6 +26,7 @@ namespace PlayerFunctions
         public float baseGravityMultiplier;
         public float gravityMultiplier;
         public bool canMove = true;
+        public PlayerGravity initialGravity;
 
         [Header("ParticleSystems")]
         public ParticleSystem dustPsRight;
@@ -47,6 +48,8 @@ namespace PlayerFunctions
 
         void Start()
         {
+            Physics2D.gravity = new Vector2(0,-1);
+
             gravityMultiplier = baseGravityMultiplier;
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerAnim = GetComponent<Animator>();

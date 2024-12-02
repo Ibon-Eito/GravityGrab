@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Portal : MonoBehaviour
@@ -20,7 +18,13 @@ public class Portal : MonoBehaviour
     {
         if (isOpened && collision.gameObject.CompareTag("Player"))
         {
-            GameManager.Instance.CompleteLevel();
+            if(GameManager.Instance.gameData.tutorialDone)
+                GameManager.Instance.CompleteLevel();
+            else
+            {
+                GameManager.Instance.gameData.tutorialDone = true;
+                GameManager.Instance.GoToGameScene();
+            }
         }
     }
 

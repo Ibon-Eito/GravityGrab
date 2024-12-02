@@ -9796,7 +9796,7 @@ GameObject:
   - component: {fileID: 513002297750308353}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9980,6 +9980,7 @@ MonoBehaviour:
   baseGravityMultiplier: 5
   gravityMultiplier: 0
   canMove: 1
+  initialGravity: 0
   dustPsRight: {fileID: 460029311840617612}
   dustPsLeft: {fileID: 3182944673804761237}
   speedPs: {fileID: 9212232063131664184}
@@ -10022,7 +10023,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -10118,7 +10119,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 570848db43d03164d9f80e0fb34e3d7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orbClips: []
+  orbClips:
+  - {fileID: 8300000, guid: 443e7574cc2cb5a47b2853f49a7d0250, type: 3}
+  - {fileID: 8300000, guid: 8f05ed8c4b0bca54b9fc7fcb3e004300, type: 3}
+  - {fileID: 8300000, guid: 68fdaa6adba31dd45bcaa9eba9920ab5, type: 3}
+  - {fileID: 8300000, guid: b37485fb851cad14aa1f7a6356000248, type: 3}
+  - {fileID: 8300000, guid: dffa541c3cc674e428692167d9c6222a, type: 3}
+  - {fileID: 8300000, guid: f82c6817702ef4a458150b51354ea667, type: 3}
+  - {fileID: 8300000, guid: ddbbb7cf51586df45961b12f220cbdd7, type: 3}
+  - {fileID: 8300000, guid: 998254468dc3e10438d9437dd5aa65e6, type: 3}
+  - {fileID: 8300000, guid: 743dda45efb3e4447ba7d55db2753657, type: 3}
   keyClip: {fileID: 8300000, guid: c2e23f3b4c720eb428863ca68db3ae64, type: 3}
   damageClip: {fileID: 8300000, guid: 32b222a189ecfc84580e48ec05696722, type: 3}
   stepClip: {fileID: 8300000, guid: 672001ffdc0232f40a9ecd4363870aa3, type: 3}
@@ -14920,14 +14930,14 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
   m_MaxParticleSize: 0.5
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
-  m_LengthScale: 2
+  m_LengthScale: 1
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_ShadowBias: 0
