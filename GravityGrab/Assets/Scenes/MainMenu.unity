@@ -1374,24 +1374,24 @@ MonoBehaviour:
     levelInfos:
     - unlocked: 1
       played: 0
-      orbsLeft: 0
-      seconds: 0
-      minutes: 0
+      orbsLeft: 100
+      seconds: 100
+      minutes: 100
     - unlocked: 0
       played: 0
-      orbsLeft: 0
-      seconds: 0
-      minutes: 0
+      orbsLeft: 100
+      seconds: 100
+      minutes: 100
     - unlocked: 0
       played: 0
-      orbsLeft: 0
-      seconds: 0
-      minutes: 0
+      orbsLeft: 100
+      seconds: 100
+      minutes: 100
     - unlocked: 0
       played: 0
-      orbsLeft: 0
-      seconds: 0
-      minutes: 0
+      orbsLeft: 100
+      seconds: 100
+      minutes: 100
 --- !u!4 &1076648682
 Transform:
   m_ObjectHideFlags: 0
